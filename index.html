@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script type="module" src="./js/validationClient.js" defer></script>
+    <link rel="stylesheet" href="dist/style.css">
+</head>
+<body>
+    <h1 class="text-center bg-red-200">Hackers Poulette</h1>
+    <form id = "form" action="./Php/read.php" method="post" enctype="multipart/form-data">
+        <div class="form_nom">
+            <label  for="nom">Nom</label>
+            <input id="nom" type="text" name="nom" value="">
+            <span id="nom-error" class="error-message"></span>
+        </div>
+        <div class="form_prenom">
+            <label  for="prenom">Prénom</label>
+            <input id="prenom" type="text" name="prenom" value="">
+            <span id="prenom-error" class="error-message"></span>
+        </div>
+        <div class="form_mail">
+            <label  for="mail">Adresse mail</label>
+            <input id="mail" type="text" name="mail" value="">
+            <span id="mail-error" class="error-message"></span>
+        </div>
+        <div class="form_photo">
+            <label for="photo">Photo (jpg, png, gif) :</label>
+            <input id="photo" type="file"  name="photo" accept=".jpg, .png, .gif">
+            <span id="photo-error" class="error-message"></span>
+        </div>
+
+        <div class="form_description">
+            <label for="description">Décrire votre probléme</label>
+            <input id="description" type="text" name="description" value="">
+            <span id="description-error" class="error-message"></span>
+        </div>
+    
+        <div class="form_boutton">
+           
+            <input id= "boutton" type="submit" value="Soumettre" >
+        </div>
+       
+    </form>
+</body>
+</html>
