@@ -1,10 +1,14 @@
 <?php
-session_start();
-
-require_once("./db.inc.php");
+// require_once("./db.inc.php");
 $pdo = connect_db();
+if ($pdo) {
+    echo "Connexion à la base de données établie avec succès.";
+} else {
+    echo "Erreur lors de la connexion à la base de données.";
+}
 
 $errors = [];
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($_POST['nom']) || empty($_POST['prenom']) || empty($_POST['mail']) || empty($_POST['description']) || empty($_FILES['photo']) || empty($_POST['captcha'])) {
         $errors[] = "Tous les champs sont obligatoires.";
