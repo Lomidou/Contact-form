@@ -98,7 +98,6 @@ if (!empty($errors)) {
         echo $error . "<br>";
     }
 } else {
-    echo "Les données ont été enregistrées avec succès.";
+    header("Location: postread.php");
+    exit();
 }
-
-var_dump($_POST);

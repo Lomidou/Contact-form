@@ -7,3 +7,10 @@ module.exports = {
   plugins: [],
 }
 
+module.exports = {
+  content: ["Php/postread.php"],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
