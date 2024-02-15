@@ -16,7 +16,31 @@ if (isset($_POST['nom'], $_POST['prenom'], $_POST['mail'], $_POST['description']
     $email = $_POST['mail'];
     $description = $_POST['description'];
     $photo = $_FILES['photo'];
+    $captchaResponse = $_POST['g-recaptcha-response'];
 
+    $secretKey = '6Lfy2nMpAAAAAHDe5vR8eyk8bC8wIEVWtM34kab5';
+    $url = 'https://www.google.com/recaptcha/api/siteverify';
+    $data = [
+        'secret' => $secretKey,
+        'response' => $captchaResponse,
+        'remoteip' => $_SERVER['REMOTE_ADDR']
+    ];
+
+    $options = [
+        'http' => [
+            'header' => "Content-type: application/x-www-form-urlencoded\r\n",
+            'method' => 'POST',
+            'content' => http_build_query($data),
+        ],
+    ];
+
+    $context = stream_context_create($options);
+    $result = file_get_contents($url, false, $context);
+    $captchaResult = json_decode($result, true);
+
+    if (!$captchaResult['success']) {
+        $errors[] = "Captcha not valid.";
+    } else {
     if(empty($nom)||empty($prenom)||empty($email)||empty($description)){
         $errors[] = "tous les champs sont obligatoire.";
     }else{
@@ -64,7 +88,7 @@ if (isset($_POST['nom'], $_POST['prenom'], $_POST['mail'], $_POST['description']
                 $errors[] = "Erreur SQL : " . $stm->errorInfo()[2];
             }
          }
-    }
+    }}
 } else {
     $errors[] = "tous les champs sont obligatoire.";
 }
@@ -76,3 +100,5 @@ if (!empty($errors)) {
 } else {
     echo "Les données ont été enregistrées avec succès.";
 }
+
+var_dump($_POST);
