@@ -2,10 +2,13 @@
 require_once("./db.inc.php");
 $pdo = connect_db();
 
-if ($pdo) {
-    echo "Connexion à la base de données établie avec succès.";
+if (!empty($errors)) {
+    foreach ($errors as $error) {
+        echo $error . "<br>";
+    }
 } else {
-    echo "Erreur lors de la connexion à la base de données.";
+    header("Location: postread.php");
+    exit();
 }
 
 $errors = [];
@@ -18,8 +21,8 @@ if (isset($_POST['nom'], $_POST['prenom'], $_POST['mail'], $_POST['description']
     $photo = $_FILES['photo'];
     $captchaResponse = $_POST['g-recaptcha-response'];
 
-    $secretKey = '6Lfy2nMpAAAAAHDe5vR8eyk8bC8wIEVWtM34kab5';
-    $url = 'https://www.google.com/recaptcha/api/siteverify';
+    $secretKey = '6Lfy2nMpAAAAAHDe5vR8eyk8bC8wIEVWtM34kab5'; // a modifier
+    $url = 'https://www.google.com/recaptcha/api/siteverify'; // a modifier
     $data = [
         'secret' => $secretKey,
         'response' => $captchaResponse,
@@ -90,14 +93,5 @@ if (isset($_POST['nom'], $_POST['prenom'], $_POST['mail'], $_POST['description']
          }
     }}
 } else {
-    $errors[] = "tous les champs sont obligatoire.";
-}
-
-if (!empty($errors)) {
-    foreach ($errors as $error) {
-        echo $error . "<br>";
-    }
-} else {
-    header("Location: postread.php");
-    exit();
+    $errors[] = "tous les champs sont obligatoires.";
 }

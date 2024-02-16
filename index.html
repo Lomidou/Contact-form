@@ -7,6 +7,7 @@
     <title>Document</title>
     <script type="module" src="./js/validationClient.js" defer></script>
     <link rel="stylesheet" href="css/output.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 
@@ -14,49 +15,49 @@
     <div
         class="flex flex-col w-1/2 border-solid border-2 border-zinc-400 rounded-xl mx-auto p-3 mt-10 bg-zinc-700/50 shadow-[0_0_2px_#fff,inset_0_0_2px_#fff,0_0_5px_#fff,0_0_15px_#fff,0_0_30px_#fff]">
         <h1
-            class="text-xl font-bold p-2 text-center w-1/2 bg-zinc-900/75 hover:bg-zinc-700 hover:underline rounded-xl self-center shadow-[0_0_2px_#fff,inset_0_0_2px_#fff,0_0_5px_#fff,0_0_15px_#fff,0_0_30px_#fff] text-slate-100">
+            class="p-2 text-white text-xl font-bold p-2 text-center w-1/2 bg-zinc-900/75 hover:bg-zinc-700 hover:underline rounded-xl self-center shadow-[0_0_2px_#fff,inset_0_0_2px_#fff,0_0_5px_#fff,0_0_15px_#fff,0_0_30px_#fff] text-slate-100">
             Hackers Poulette</h1>
         <form id="form" class="form flex flex-col" action="./Php/read.php" method="post" enctype="multipart/form-data">
 
             <div class="form_nom mt-3">
                 <label
-                    class="text-m p-2 text-center w-1/2 bg-zinc-900/50 rounded-xl shadow-[0_0_2px_#fff,inset_0_0_2px_#fff,0_0_5px_#fff,0_0_15px_#fff,0_0_30px_#fff] text-slate-100"
+                    class="p-2 text-white text-m p-2 text-center w-1/2 bg-zinc-900/50 rounded-xl shadow-[0_0_2px_#fff,inset_0_0_2px_#fff,0_0_5px_#fff,0_0_15px_#fff,0_0_30px_#fff] text-slate-100"
                     for="nom">Nom</label>
                 </br>
-                <input id="nom" type="text" name="nom" value="" class="p-2 mt-3 w-full rounded-xl">
+                <input id="nom" type="text" name="nom" value="" class="p-2 mt-3 w-full rounded-xl text-black">
                 <span id="nom-error" class="error-message"></span>
             </div>
 
             <div class="form_prenom mt-3">
                 <label
-                    class="text-m p-2 text-center w-1/2 bg-zinc-900/50 rounded-xl shadow-[0_0_2px_#fff,inset_0_0_2px_#fff,0_0_5px_#fff,0_0_15px_#fff,0_0_30px_#fff] text-slate-100"
+                    class="p-2 text-white text-m p-2 text-center w-1/2 bg-zinc-900/50 rounded-xl shadow-[0_0_2px_#fff,inset_0_0_2px_#fff,0_0_5px_#fff,0_0_15px_#fff,0_0_30px_#fff] text-slate-100"
                     for="prenom">Prénom</label>
                 </br>
-                <input id="prenom" type="text" name="prenom" value="" class="p-2 mt-3 w-full rounded-xl">
+                <input id="prenom" type="text" name="prenom" value="" class="p-2 mt-3 w-full rounded-xl text-black">
                 <span id="prenom-error" class="error-message"></span>
             </div>
 
             <div class="form_mail mt-3">
                 <label
-                    class="text-m p-2 text-center w-1/2 bg-zinc-900/50 rounded-xl shadow-[0_0_2px_#fff,inset_0_0_2px_#fff,0_0_5px_#fff,0_0_15px_#fff,0_0_30px_#fff] text-slate-100"
+                    class="p-2 text-white text-m p-2 text-center w-1/2 bg-zinc-900/50 rounded-xl shadow-[0_0_2px_#fff,inset_0_0_2px_#fff,0_0_5px_#fff,0_0_15px_#fff,0_0_30px_#fff] text-slate-100"
                     for="mail">Adresse mail</label>
                 </br>
-                <input id="mail" type="text" name="mail" value="" class="p-2 mt-3 w-full rounded-xl">
+                <input id="mail" type="text" name="mail" value="" class="p-2 mt-3 w-full rounded-xl text-black">
                 <span id="mail-error" class="error-message"></span>
             </div>
 
             <div class="form_description mt-3">
                 <label
-                    class="text-m p-2 text-center bg-zinc-900/50 rounded-xl shadow-[0_0_2px_#fff,inset_0_0_2px_#fff,0_0_5px_#fff,0_0_15px_#fff,0_0_30px_#fff] text-slate-100"
+                    class="p-2 text-white text-m p-2 text-center bg-zinc-900/50 rounded-xl shadow-[0_0_2px_#fff,inset_0_0_2px_#fff,0_0_5px_#fff,0_0_15px_#fff,0_0_30px_#fff] text-slate-100"
                     for="description">Décrire votre problème</label>
                 </br>
-                <input id="description" type="text" name="description" value="" class="p-2 mt-3 w-full rounded-xl">
+                <input id="description" type="text" name="description" value="" class="p-2 mt-3 w-full rounded-xl text-black">
                 <span id="description-error" class="error-message"></span>
             </div>
 
             <div class="form_photo mt-3">
                 <label
-                    class="text-m p-2 text-center w-1/2 bg-zinc-900/50 rounded-xl shadow-[0_0_2px_#fff,inset_0_0_2px_#fff,0_0_5px_#fff,0_0_15px_#fff,0_0_30px_#fff] text-slate-100"
+                    class="p-2 text-white text-m p-2 text-center w-1/2 bg-zinc-900/50 rounded-xl shadow-[0_0_2px_#fff,inset_0_0_2px_#fff,0_0_5px_#fff,0_0_15px_#fff,0_0_30px_#fff] text-slate-100"
                     for="photo">Photo (jpg, png, gif) :</label>
                 </br>
                 <input id="photo" type="file" name="photo" accept=".jpg, .png, .gif" class="mt-3 text-slate-100 mt-3 block w-full text-sm text-zinc-500
@@ -69,12 +70,16 @@
             </div>
 
             <div class="form_boutton mt-3 self-center">
-                <input class="text-m p-2 text-center bg-zinc-900/50 rounded-xl shadow-[0_0_2px_#fff,inset_0_0_2px_#fff,0_0_5px_#fff,0_0_15px_#fff,0_0_30px_#fff] text-slate-100"
+                <input class="p-2 text-white text-m p-2 text-center bg-zinc-900/50 rounded-xl shadow-[0_0_2px_#fff,inset_0_0_2px_#fff,0_0_5px_#fff,0_0_15px_#fff,0_0_30px_#fff] text-slate-100"
                     id="boutton" type="submit" value="Soumettre">
             </div>
 
-            <div class="g-recaptcha mt-3 self-center" data-sitekey="6Lfy2nMpAAAAAOB-zm2LthjTNSEOhvsHoTcNsRHl"></div>
+            <div class="g-recaptcha mt-3 mb-3 self-center" data-sitekey="6Lfy2nMpAAAAAOB-zm2LthjTNSEOhvsHoTcNsRHl"></div>
         </form>
+                                <div class="form_boutton mt-3 mb-3 self-center">
+                <a class="p-2 text-white text-m p-2 text-center bg-zinc-900/50 rounded-xl shadow-[0_0_2px_#fff,inset_0_0_2px_#fff,0_0_5px_#fff,0_0_15px_#fff,0_0_30px_#fff] text-slate-100"
+                    href="./Php/login.php">Connexion Admin </a>
+            </div>
     </div>
 </body>
 

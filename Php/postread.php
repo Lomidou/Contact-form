@@ -7,6 +7,7 @@
     <title>Document</title>
     <script type="module" src="./js/validationClient.js" defer></script>
     <link rel="stylesheet" href="css/output.css">
+      <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 
