@@ -2,51 +2,43 @@
 require_once("./db.inc.php");
 $pdo = connect_db();
 
-if (!empty($errors)) {
-    foreach ($errors as $error) {
-        echo $error . "<br>";
-    }
-} else {
-    header("Location: postread.php");
-    exit();
-}
-
 $errors = [];
 
-if (isset($_POST['nom'], $_POST['prenom'], $_POST['mail'], $_POST['description'],$_FILES['photo'])) {
-    $nom = $_POST['nom'];
-    $prenom = $_POST['prenom'];
-    $email = $_POST['mail'];
-    $description = $_POST['description'];
-    $photo = $_FILES['photo'];
-    $captchaResponse = $_POST['g-recaptcha-response'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['nom'], $_POST['prenom'], $_POST['mail'], $_POST['description'], $_FILES['photo'])) {
+        $nom = $_POST['nom'];
+        $prenom = $_POST['prenom'];
+        $email = $_POST['mail'];
+        $description = $_POST['description'];
+        $photo = $_FILES['photo'];
+        $captchaResponse = $_POST['g-recaptcha-response'];
 
-    $secretKey = '6Lfy2nMpAAAAAHDe5vR8eyk8bC8wIEVWtM34kab5'; // a modifier
-    $url = 'https://www.google.com/recaptcha/api/siteverify'; // a modifier
-    $data = [
-        'secret' => $secretKey,
-        'response' => $captchaResponse,
-        'remoteip' => $_SERVER['REMOTE_ADDR']
-    ];
+        $secretKey = '6Lfy2nMpAAAAAHDe5vR8eyk8bC8wIEVWtM34kab5';
+        $url = 'https://www.google.com/recaptcha/api/siteverify';
+        $data = [
+            'secret' => $secretKey,
+            'response' => $captchaResponse,
+            'remoteip' => $_SERVER['REMOTE_ADDR']
+        ];
 
-    $options = [
-        'http' => [
-            'header' => "Content-type: application/x-www-form-urlencoded\r\n",
-            'method' => 'POST',
-            'content' => http_build_query($data),
-        ],
-    ];
+        $options = [
+            'http' => [
+                'header' => "Content-type: application/x-www-form-urlencoded\r\n",
+                'method' => 'POST',
+                'content' => http_build_query($data),
+            ],
+        ];
 
-    $context = stream_context_create($options);
-    $result = file_get_contents($url, false, $context);
-    $captchaResult = json_decode($result, true);
+        $context = stream_context_create($options);
+        $result = file_get_contents($url, false, $context);
+        $captchaResult = json_decode($result, true);
 
-    if (!$captchaResult['success']) {
-        $errors[] = "Captcha not valid.";
-    } else {
-    if(empty($nom)||empty($prenom)||empty($email)||empty($description)){
-        $errors[] = "tous les champs sont obligatoire.";
-    }else{
+        if (!$captchaResult['success']) {
+            $errors[] = "Captcha not valid.";
+        } else {
+            if (empty($nom) || empty($prenom) || empty($email) || empty($description)) {
+                $errors[] = "Tous les champs sont obligatoires.";
+            } else {
         if (strlen($nom) < 2 || strlen($nom) > 255) {
             $errors[] = "Le nom doit contenir entre 2 et 255 caractères.";
         }
@@ -74,24 +66,34 @@ if (isset($_POST['nom'], $_POST['prenom'], $_POST['mail'], $_POST['description']
         }
         
         if (empty($errors)) {
-            $enregistrementImage = '../img/';
-            $cheminFichier = $enregistrementImage . $photo['name'];
-        }
-            
+                    $enregistrementImage = '../img/';
+                    $cheminFichier = $enregistrementImage . $photo['name'];
 
-        if (!move_uploaded_file($photo['tmp_name'], $cheminFichier)) {
-            $errors[] = "Une erreur s'est produite lors de l'enregistrement du fichier.";
-            
-        } else {
-            $requete = "INSERT INTO contacts (nom, prenom, mail, description, photo) VALUES (?, ?, ?, ?, ?)";
-            $stm = $pdo->prepare($requete);
-            $succes = $stm->execute([$nom, $prenom, $email, $description, $cheminFichier]);
+                    if (move_uploaded_file($photo['tmp_name'], $cheminFichier)) {
+                        $requete = "INSERT INTO contacts (nom, prenom, mail, description, photo) VALUES (?, ?, ?, ?, ?)";
+                        $stm = $pdo->prepare($requete);
+                        $succes = $stm->execute([$nom, $prenom, $email, $description, $cheminFichier]);
 
-            if (!$succes) {
-                $errors[] = "Erreur SQL : " . $stm->errorInfo()[2];
+                        if (!$succes) {
+                            $errors[] = "Erreur SQL : " . $stm->errorInfo()[2];
+                        } else {
+                            header("Location: postread.php");
+                            exit();
+                        }
+                    } else {
+                        $errors[] = "Une erreur s'est produite lors de l'enregistrement du fichier.";
+                    }
+                }
             }
-         }
-    }}
-} else {
-    $errors[] = "tous les champs sont obligatoires.";
+        }
+    } else {
+        $errors[] = "Tous les champs sont obligatoires.";
+    }
 }
+
+if (!empty($errors)) {
+    foreach ($errors as $error) {
+        echo $error . "<br>";
+    }
+}
+?>
