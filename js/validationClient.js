@@ -9,11 +9,11 @@ function ConfirmationEnvoi() {
     return Confirmation;
 }
 
-// Si pas formulaire pas validé
+// Si formulaire pas validé
 const ERROR_MESSAGES = {
     nom: "Le nom n'est pas valide : minimum 2 et maximum 255 caractères",
     prenom: "Le prénom n'est pas valide : minimum de 2 et maximum 255 caractères",
-    mail: "L'adresse mail n'est pas valide",
+    mail: "L'adresse e-mail n'est pas valide",
     photo: "Le fichier doit être au format JPG, PNG ou GIF.",
     description: "La description n'est pas valide : minimum 2 et maximum 1000 caractères."
 };
