@@ -8,12 +8,10 @@ if ($pdo) {
     echo "Échec de la connexion à la base de données.<br>";
 }
 
-//Import PHPMailer classes into the global namespace
-//These must be at the top of your script, not inside a function
+//required files
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
  
-//required files
 require 'phpmailer/src/Exception.php';
 require 'phpmailer/src/PHPMailer.php';
 require 'phpmailer/src/SMTP.php';

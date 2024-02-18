@@ -2,70 +2,75 @@
 require_once("./db.inc.php");
 $pdo = connect_db();
 
-$errors = [];
+const CAPTCHA_SECRET_KEY = ''; // à modifier
+const MAX_FILE_SIZE = 2 * 1024 * 1024;
+const VALID_IMAGE_EXTENSIONS = ['jpg', 'png', 'gif'];
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['nom'], $_POST['prenom'], $_POST['mail'], $_POST['description'], $_FILES['photo'])) {
-        $nom = $_POST['nom'];
-        $prenom = $_POST['prenom'];
-        $email = $_POST['mail'];
-        $description = $_POST['description'];
-        $photo = $_FILES['photo'];
-        $captchaResponse = $_POST['g-recaptcha-response'];
+function validateLength($value, $minLength, $maxLength, $errorMessage) {
+    if (strlen($value) < $minLength || strlen($value) > $maxLength) {
+        return $errorMessage;
+    }
+    return null;
+}
 
-        $secretKey = '6Lfy2nMpAAAAAHDe5vR8eyk8bC8wIEVWtM34kab5';
-        $url = 'https://www.google.com/recaptcha/api/siteverify';
-        $data = [
-            'secret' => $secretKey,
-            'response' => $captchaResponse,
-            'remoteip' => $_SERVER['REMOTE_ADDR']
-        ];
+function validateEmail($email) {
+    return filter_var($email, FILTER_VALIDATE_EMAIL);
+}
 
-        $options = [
-            'http' => [
-                'header' => "Content-type: application/x-www-form-urlencoded\r\n",
-                'method' => 'POST',
-                'content' => http_build_query($data),
-            ],
-        ];
+function validateImage($photo) {
+    $extension = strtolower(pathinfo($photo['name'], PATHINFO_EXTENSION));
+    if (!in_array($extension, VALID_IMAGE_EXTENSIONS)) {
+        return "Format jpg, png ou gif obligatoire";
+    }
+    if ($photo['size'] > MAX_FILE_SIZE) {
+        return "La taille dépasse la limite autorisée: 2 Mo";
+    }
+    return null;
+}
 
-        $context = stream_context_create($options);
-        $result = file_get_contents($url, false, $context);
-        $captchaResult = json_decode($result, true);
+function validateCaptcha($captchaResponse) {
+    $url = '';  // à modifier
+    $data = [
+        'secret' => CAPTCHA_SECRET_KEY,
+        'response' => $captchaResponse,
+        'remoteip' => $_SERVER['REMOTE_ADDR']
+    ];
+    $options = [
+        'http' => [
+            'header' => "Content-type: application/x-www-form-urlencoded\r\n",
+            'method' => 'POST',
+            'content' => http_build_query($data),
+        ],
+    ];
+    $context = stream_context_create($options);
+    $result = file_get_contents($url, false, $context);
+    $captchaResult = json_decode($result, true);
+    return $captchaResult['success'];
+}
 
-        if (!$captchaResult['success']) {
-            $errors[] = "Captcha not valid.";
-        } else {
-            if (empty($nom) || empty($prenom) || empty($email) || empty($description)) {
-                $errors[] = "Tous les champs sont obligatoires.";
+function handleFormSubmission() {
+    $pdo = connect_db();
+    $invalidations = [];
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if (isset($_POST['nom'], $_POST['prenom'], $_POST['mail'], $_POST['description'], $_FILES['photo'], $_POST['g-recaptcha-response'])) {
+            $nom = $_POST['nom'];
+            $prenom = $_POST['prenom'];
+            $email = $_POST['mail'];
+            $description = $_POST['description'];
+            $photo = $_FILES['photo'];
+            $captchaResponse = $_POST['g-recaptcha-response'];
+
+            if (!validateCaptcha($captchaResponse)) {
+                $invalidations[] = "Captcha n'est pas valide";
             } else {
-        if (strlen($nom) < 2 || strlen($nom) > 255) {
-            $errors[] = "Le nom doit contenir entre 2 et 255 caractères.";
-        }
-        if (strlen($prenom) < 2 || strlen($prenom) > 255) {
-            $errors[] = "Le prénom doit contenir entre 2 et 255 caractères.";
-        }
+                $invalidations[] = validateLength($nom, 2, 255, "Nom invalide: il doit contenir entre 2 et 255 caractères.");
+                $invalidations[] = validateLength($prenom, 2, 255, "Prénom invalide : doit contenir entre 2 et 255 caractères.");
+                $invalidations[] = validateEmail($email) ? null : "E-mail non valide";
+                $invalidations[] = validateLength($description, 2, 1000, "Description non valide: doit contenir entre 2 et 1000 caractères.");
+                $invalidations[] = validateImage($photo);
 
-        if(!filter_var($email,FILTER_VALIDATE_EMAIL)){
-            $errors[] = "adresse e-mail non valide.";
-        }
-        if (strlen($description) < 2 || strlen($description) > 1000) {
-            $errors[] = "La description doit contenir entre 2 et 1000 caractères.";
-        }
-
-        $extension = [ 'jpg', 'png', 'gif'];
-        $tailleFichier = 2 * 1024 * 1024;
-        $photoExtensions = strtolower(pathinfo($photo['name'], PATHINFO_EXTENSION));
-
-        if(!in_array($photoExtensions, $extension)) {
-            $errors[] = "Le fichier doit etre au format jpg,png ou gif";
-        }
-
-        if($photo['size'] > $tailleFichier) {
-            $errors[] = "la taille du fichier dépasse la limite autorisée (2 Mo)";
-        }
-        
-        if (empty($errors)) {
+                if (empty(array_filter($invalidations))) {
                     $enregistrementImage = '../img/';
                     $cheminFichier = $enregistrementImage . $photo['name'];
 
@@ -75,25 +80,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $succes = $stm->execute([$nom, $prenom, $email, $description, $cheminFichier]);
 
                         if (!$succes) {
-                            $errors[] = "Erreur SQL : " . $stm->errorInfo()[2];
+                            $invalidations[] = "Erreur SQL : " . $stm->errorInfo()[2];
                         } else {
                             header("Location: postread.php");
                             exit();
                         }
                     } else {
-                        $errors[] = "Une erreur s'est produite lors de l'enregistrement du fichier.";
+                        $invalidations[] = "Erreur lors de l'enregistrement du fichier.";
                     }
                 }
             }
+        } else {
+            $invalidations[] = "Les champs ne peuvent pas être vides";
         }
-    } else {
-        $errors[] = "Tous les champs sont obligatoires.";
+    }
+    if (!empty($invalidations)) {
+        echo implode("<br>", $invalidations);
     }
 }
+handleFormSubmission();
 
-if (!empty($errors)) {
-    foreach ($errors as $error) {
-        echo $error . "<br>";
-    }
-}
 ?>
