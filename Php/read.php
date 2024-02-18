@@ -49,7 +49,6 @@ function validateCaptcha($captchaResponse) {
 }
 
 function handleFormSubmission() {
-    $pdo = connect_db();
     $invalidations = [];
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
