@@ -1,7 +1,4 @@
-Contact-form
-
-<h1 align="center">Salut 👋, Je suis Thomas Scozzari</h1>
-<h3 align="center">Un développeur junior passionné de Belgique 🇧🇪</h3>
+<h1 align="center">Contact form</h1>
 
 <h3>Projet à réaliser</h3>
 <p>La création d'un formulaire à l'aide du langage PHP, d'une connexion à une base de données, d'une validation client à l'aide de JS, l'utlisation d'une librairie Tailwind, la prévention grâce à un Captcha.
